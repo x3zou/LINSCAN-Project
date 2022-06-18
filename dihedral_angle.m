@@ -10,6 +10,24 @@ Fs=12; % font size
 load date1dihedral_input.txt;
 x=date1dihedral_input;
 
+
+%s=atan2(x(:,4)-x(:,2),x(:,3)-x(:,1))*180/pi;
+y1=x(:,2);
+y2=x(:,4);
+x1=x(:,1);
+x2=x(:,3);
+for i=1:length(x)
+    if y1(i)>y2(i)
+        y1(i)=x(i,4);
+        y2(i)=x(i,2);
+        x1(i)=x(i,3);
+        x2(i)=x(i,1);
+    end
+end
+x(:,2)=y1;
+x(:,4)=y2;
+x(:,1)=x1;
+x(:,3)=x2;
 s=atan2(x(:,4)-x(:,2),x(:,3)-x(:,1))*180/pi;
 Len=sqrt((x(:,4)-x(:,2)).^2+(x(:,3)-x(:,1)).^2);
 s4=s;
@@ -87,8 +105,15 @@ figure(4)
 clf
 for i=1:length(s)
  for j=i:length(s)
-%  if i~=j & ((s(i)>90 & s(j)<90) | (s(i)<90 & s(j)>90))
-  if i~=j & (abs(abs(r3(i))-abs(r3(j)))>90)
+     xm1=(x1(i)+x2(i))/2;
+     xm2=(x1(j)+x2(j))/2;
+     ym1=(y1(i)+y2(i))/2;
+     ym2=(y1(j)+y2(j))/2;
+     dist=sqrt((xm1-xm2)^2+(ym1-ym2)^2);
+     L1=sqrt((x1(i)-x2(i))^2+(y1(i)-y2(i))^2);
+     L2=sqrt((x1(j)-x2(j))^2+(y1(j)-y2(j))^2);
+  if i~=j && ((s(i)>90 && s(j)<90) || (s(i)<90 && s(j)>90)) && dist > max(L1,L2)
+%   if i~=j & (abs(abs(r3(i))-abs(r3(j)))>90)
 
       dff=abs(s4(i)-s4(j)); 
       df=[df dff];
@@ -104,6 +129,7 @@ for i=1:length(s)
   end
  end
 end
+% end
 %ind=find(df>180);
 %df(ind)=df(ind)-180;
 
