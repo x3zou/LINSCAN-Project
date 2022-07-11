@@ -5,11 +5,11 @@ clear
 clc
 minlon = -60; maxlon = 25; minlat = -5; maxlat = 80; %scope limit for fault traces plotting. Unit: UTM
 %list=importdata("02list_eps=sqrt4_test.txt");
-ends=importdata("d2_ends.txt");
+ends=importdata("d1ends.txt");
 %points=importdata("correlation0.2test.txt");%linscan-scanned data
-points2=importdata("d2_clusters_saved.txt");%high quality clusters
-input=importdata("date2input.txt");%earthquake catalog xy data
-catalog=importdata("date2MSDR.txt");%complete earthquake catalog
+points2=importdata("d1clusters.txt");%high quality clusters
+input=importdata("date1input.txt");%earthquake catalog xy data
+catalog=importdata("date1MSDR.txt");%complete earthquake catalog
 pointsdr=zeros(1,7);
 newpointsdr=zeros(1,6);
 ERROR=zeros(1,1);

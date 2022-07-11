@@ -442,11 +442,11 @@ if __name__ == '__main__':
     from lin_scan_old import swiss_roll, crossing_lines
 
     # read data
-    dataset = np.array(import_hs())
+    dataset = np.loadtxt("d2eps=sqrt8_input_2.txt",delimiter=',')
 
-    dataset -= dataset.mean(0)
+    # dataset -= dataset.mean(0)
 
-    dataset /= np.max(np.abs(dataset))
+    # dataset /= np.max(np.abs(dataset))
 
     # fig = plt.figure()
     # ax = fig.add_subplot(111)
@@ -473,9 +473,9 @@ if __name__ == '__main__':
     plt.scatter(dataset[:, 0], dataset[:, 1], marker='o', s=(2 * 72. / fig.dpi) ** 2)
     plt.show()
 
-    eps = np.sqrt(25)
-    min_pts = 35
-    threshold = .5
+    eps = np.sqrt(8)
+    min_pts = 20
+    threshold = .2
     ecc_pts = 20
 
     multiplier = 1
@@ -509,6 +509,8 @@ if __name__ == '__main__':
 
     temp = np.array([dataset[i, :] for i in range(len(dataset)) if typelist[i] != -1])
     temp_list = np.array([typelist[i] for i in range(len(typelist)) if typelist[i] != -1])
+    np.savetxt('d2eps=sqrt8_2.txt',temp)
+    np.savetxt('d2listeps=sqrt8_2.txt',temp_list)
 
     fig = plt.figure()
     ax = fig.add_subplot(111)

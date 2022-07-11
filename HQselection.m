@@ -1,13 +1,13 @@
 %This is the algorithm for selecting high-quality clusters
-%Xiaoyu Zou, x3zou@ucsd.edu,5/16/2022
+%Xiaoyu Zou, x3zou@ucsd.edu,07/07/2022
 clear
 clc
-list=importdata("d1list_eps=sqrt16_2.txt");%lin_scan output list,change with iteration
+list=importdata("d2listeps=sqrt8_2.txt");%lin_scan output list,change with iteration
 %real=importdata("eps=sqrt(16)_input.txt");
-real=importdata("d1eps=16_input_2.txt");%lin_scan input,change with iteration
-points=importdata("d1iter_eps=sqrt16_2.txt");%lin_scan output,change with iteration
-catalog=importdata("date1MSDR.txt");%complete earthquake catalog
-input=importdata("date1input.txt");%earthquake catalog xy data
+real=importdata("d2eps=sqrt8_input_2.txt");%lin_scan input,change with iteration
+points=importdata("d2eps=sqrt8_2.txt");%lin_scan output,change with iteration
+catalog=importdata("date2MSDR.txt");%complete earthquake catalog
+input=importdata("date2input.txt");%earthquake catalog xy data
 points_selected=zeros(1,2);
 points_experiment=zeros(1,2);
 points_added=zeros(1,2);
@@ -17,7 +17,7 @@ dipP1test=zeros(1,1);
 dipP2test=zeros(1,1);
 dipT1test=zeros(1,1);
 dipT2test=zeros(1,1);
-z=468;%!!!please rememeber you may need to change this value everytime you change the importdata!!!
+z=56;%!!!please rememeber you may need to change this value everytime you change the importdata!!!
 ends=zeros(1,4);
 for i=min(list):max(list)
     a=double(isempty(points(find(list==i),:)));
@@ -34,6 +34,9 @@ for i=min(list):max(list)
     else
         continue
     end
+    if isnan(L)
+        continue
+    end
     if L>20
         continue
     end
@@ -47,9 +50,9 @@ idx=~ismember(real,points_selected,'rows');
 res=real(idx,:);
 %writematrix(res,'selected_eps=sqrt10.txt')
 %writematrix(points_selected,'points_selected_eps=sqrt14.txt')
-m=15;
-n=15;
-ha = tight_subplot(m,n,[0.03 0.03],[0.1 0.01],[0.01 0.01]);
+% m=15;
+% n=15;
+% ha = tight_subplot(m,n,[0.03 0.03],[0.1 0.01],[0.01 0.01]);
 k=0;
 for i=min(list):max(list)
     pointsdr=zeros(1,6);
@@ -63,6 +66,9 @@ for i=min(list):max(list)
         L=sqrt((x1-x2)^2+(y1-y2)^2);
         slope=atan((y1-y2)/(x1-x2));
     else
+        continue
+    end
+    if isnan(slope)
         continue
     end
     if L>20
