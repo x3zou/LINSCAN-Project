@@ -1,3 +1,5 @@
+%use kl divergence to select even distributed points
+%Xiaoyu Zou,x3zou@ucsd.edu,7/21/2022
 function [kld] = getkld(data)
 [x1,y1,x2,y2]=lin_fit2(data(:,1),data(:,2));
 vector=[x1,y1;x2,y2];
@@ -26,7 +28,7 @@ for i=1:size(projpoint,1)
     end
 end
 % pd1=fitdist(newpoint','kernel');
-h=histogram(newpoint,6,'Normalization','probability');
+h=histogram(newpoint,10,'Normalization','probability');
 set(h,'Visible','off')
 what=h.Values;
 % ywhat=pdf(pd1,newpoint);

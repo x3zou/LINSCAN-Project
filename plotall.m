@@ -1,14 +1,15 @@
 %This is the algorithms for plotting all indivicual clusters and focal
 %mechanisms
-%Xiaoyu Zou, x3zou@ucsd.edu, 7/11/2022
+%Xiaoyu Zou, x3zou@ucsd.edu, 7/21/2022
 clear
 clc
 %list=importdata("02list_eps=sqrt4_test.txt");
-ends=importdata("d2ends.txt");
+ends=importdata("testingends.txt");
 %points=importdata("correlation0.2test.txt");%linscan-scanned data
-points2=importdata("d2clusters.txt");%high quality clusters
-input=importdata("date2input.txt");%earthquake catalog xy data
-catalog=importdata("date2MSDR.txt");%complete earthquake catalog
+points2=importdata("testingclusters.txt");%high quality clusters
+input=importdata("date1input.txt");%earthquake catalog xy data
+catalog=importdata("date1MSDR.txt");%complete earthquake catalog
+%res=importdata("testres.txt");%for testing
 pointsdr=zeros(1,7);
 newpointsdr=zeros(1,6);
 %Unify the sequence of endpoints
@@ -52,9 +53,10 @@ pointsdr(1,:)=[];
 %plotall
 m=3;
 n=3;
-for p=1:11
+for p=1:1 %pages
     j=0+(p-1)*m*n;
-    figure()
+    h=figure();
+    set(h,'visible','off')
     ha = tight_subplot(m,n,[0.03 0.03],[0.1 0.01],[0.01 0.01]);
     for i=1:m*n
         axes(ha(i));
@@ -99,10 +101,13 @@ for p=1:11
         [azP2, dipP2, azT2, dipT2] = PTaxis(S2,D2,R2);
         if abs(strike-S1) > abs(strike-S2)
             dipP=dipP2;
+            dipT=dipT2;
         else
             dipP=dipP1;
+            dipT=dipT1;
         end
-
+        dipP=dipP*180/pi;
+        dipT=dipT*180/pi;
         %plot clusters and lines
         v1=[x1 y1 0];  v2=[x2 y2 0];
         pts=[pp(:,1) pp(:,2) 0*pp(:,1)];
@@ -119,7 +124,6 @@ for p=1:11
         num=size(pp,1);
         cc=pearson(pp(:,1),pp(:,2));
         no=i;
-
         M = [comp(1) comp(4) comp(5); comp(4) comp(2) comp(6); comp(5) comp(6) comp(3)];
         %this is to determine where to plot the beachball
         slope=(y1-y2)/(x1-x2);
@@ -129,7 +133,9 @@ for p=1:11
             xm=(x1+x2)/2-L/3.5; ym=(y1+y2)/2-L/5;
         end
         focalmech(comp, xm, ym, L/7, 'b','dc')
-        text((x1+x2)/2,(y1+y2)/2,sprintf('n=%i,d=%f,cc=%f,dipP=%f',num,mean_dist,cc,dipP),'Color','r','FontWeight','bold','Fontsize',8);
+        text((x1+x2)/2,(y1+y2)/2,sprintf('n=%i,d=%f,cc=%f,\n dipP=%f,dipT=%f,id=#%i',num,mean_dist,cc,dipP,dipT,j),'Color','r','FontWeight','bold','Fontsize',9);
+        h.Position=[10 10 1300 1300];
+%         saveas(h,sprintf('d2page%d.png',p));
     end
 end
 newpointsdr=vertcat(newpointsdr,pp);
