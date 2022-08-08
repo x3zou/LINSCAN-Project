@@ -7,8 +7,8 @@ bin=5; % bin size for strikes from the slip model , deg
 Fs=12; % font size
 
 % read model geometry (segment coords/moment tensor)
-load date1dihedral_input.txt;
-x=date1dihedral_input;
+load ttdihedral_newinput.txt;
+x=ttdihedral_newinput;
 
 
 %s=atan2(x(:,4)-x(:,2),x(:,3)-x(:,1))*180/pi;
@@ -213,6 +213,7 @@ yl=get(gca,'ylim');
 %text(90, 100,'$2\theta_2$','FontSize', 16, 'Interpreter','latex'), hold on
 
 %histogram(df);
+title("Trans-tensional dihedral angles")
 xlabel('Dihedral angle, deg.');
 ylabel('Number of conjugate pairs');
 

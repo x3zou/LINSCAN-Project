@@ -12,10 +12,10 @@ Fs=14; % font size
 
 %load lin_segments.dat;
 %x=lin_segments;
-load date1dihedral_input.txt;
-x=date1dihedral_input;
-ind=find((x(:,4)+x(:,2))/2 >  -40);
-x=x(ind,:);
+load ttdihedral_newinput.txt;
+x=ttdihedral_newinput;
+% ind=find((x(:,4)+x(:,2))/2 >  -40);
+% x=x(ind,:);
 
 y1=x(:,2);
 y2=x(:,4);
@@ -121,7 +121,7 @@ sa=-adjust-sa;
 su = 2;   % upper bound
 sl = 2;   % lower bound
 lineStyle='-';
-draw_line(sa,colorAvgAng,lineStyle,2);
+% draw_line(sa,colorAvgAng,lineStyle,2);
 offset=-0.01;
 %draw_arc(sa,sl,su,colorAvgAng,offset,lineStyle);
 ax.RLim = [0 R];
@@ -138,7 +138,7 @@ sl = 0;   % lower bound
 su = 3;   % upper bound
 sl = 3;   % lower bound
 lineStyle=':';
-draw_line(sa,colorAvgAng,lineStyle,2);
+% draw_line(sa,colorAvgAng,lineStyle,2);
 offset=0.02;
 %draw_arc(sa,sl,su,colorAvgAng,offset,lineStyle);
 ax.RLim = [0 R];
@@ -151,7 +151,7 @@ sa=adjust-sa;
 su = 1;   % upper bound
 sl = 1;   % lower bound
 %draw_cone(sa,sl,su,colorAvgAng);
-draw_line(sa,colorAvgAng,'--',2);
+% draw_line(sa,colorAvgAng,'--',2);
 offset=-0.01;
 %draw_arc(sa,sl,su,colorAvgAng,offset,'-');
 ax.RLim = [0 R];
@@ -164,7 +164,7 @@ su = 11.5;   % upper bound (smaller strike)
 sl = 4.5;   % lower bound
 %draw_cone(sa,sl,su,colorAvgAng);
 %ax=gca;
-draw_cone_hatched(sa-sl,sa+su,R,colorAvgAng);
+% draw_cone_hatched(sa-sl,sa+su,R,colorAvgAng);
 ax.RLim = [0 R];
 
 % M6, aftershocks of M6
@@ -174,7 +174,7 @@ sa=adjust-sa;
 su = 4;   % upper bound
 sl = 3;   % lower bound
 %draw_cone(sa,sl,su,colorAvgAng);
-draw_line(sa,colorAvgAng,':',2);
+% draw_line(sa,colorAvgAng,':',2);
 offset=0.02;
 %draw_arc(sa,sl,su,colorAvgAng,offset,':');
 ax.RLim = [0 R];
@@ -186,7 +186,7 @@ sa=adjust-sa;
 su = 2;   % upper bound
 sl = 2;   % lower bound
 %draw_cone(sa,sl,su,colorAvgAng);
-draw_line(sa,colorAvgAng,'-',2);
+% draw_line(sa,colorAvgAng,'-',2);
 offset=-0.01;
 %draw_arc(sa,sl,su,colorAvgAng,offset,'-');
 ax.RLim = [0 R];
@@ -197,7 +197,7 @@ sa = 228-adjust2; % mean angle
 su = 1;   % upper bound
 sl = 1;   % lower bound
 %draw_cone(sa,sl,su,colorAvgAng);
-draw_line(sa,colorAvgAng,'--',2);
+% draw_line(sa,colorAvgAng,'--',2);
 offset=-0.01;
 %draw_arc(sa,sl,su,colorAvgAng,offset,'-');
 ax.RLim = [0 R];
@@ -207,15 +207,15 @@ sa = 44.5; % mean angle
 su = 5;   % upper bound
 sl = 5;   % lower bound
 %draw_cone(sa,sl,su,colorAvgAng);
-draw_cone_hatched(sa-sl,sa+su,R,colorAvgAng);
+% draw_cone_hatched(sa-sl,sa+su,R,colorAvgAng);
 
 
 %text(deg2rad(88),2.3*F,'$\sigma_{Hmax}$','FontSize',14,'Rotation',88,...
 %    'HorizontalAlignment','center',...
 %    'VerticalAlignment','bottom', 'Interpreter','latex')
- text(deg2rad(77),2.1*F,'$\dot{\varepsilon}_{Hmax}$','FontSize',16,'Rotation',86,...
-     'HorizontalAlignment','center','Color','m',...
-     'VerticalAlignment','bottom', 'Interpreter','latex')
+%  text(deg2rad(77),2.1*F,'$\dot{\varepsilon}_{Hmax}$','FontSize',16,'Rotation',86,...
+%      'HorizontalAlignment','center','Color','m',...
+%      'VerticalAlignment','bottom', 'Interpreter','latex')
 
 % sigma 1 stress 
 colorAvgAng = 'k';
@@ -227,7 +227,7 @@ sa=adjust-sa;
 colorAvgAng = 'm';
 sa =4.9;
 sa=adjust-sa;
-draw_line(sa,colorAvgAng,'-',0.5);
+% draw_line(sa,colorAvgAng,'-',0.5);
 
 ax.FontSize = 18;
 ax.RTick = [];
@@ -243,9 +243,9 @@ thetaticklabels({'East','60^\circ','30^\circ','North', '330^\circ','300^\circ','
 text(deg2rad(27),2.3*F,'left-lateral','FontSize',14,'Rotation',0,...
     'HorizontalAlignment','center',...
     'VerticalAlignment','bottom','color','b')
-draw_h_line(37,1.5*F,'b','-','M6.4 focal mech.',2);
-draw_h_line(30,1.37*F,'b','--','M6.4 CMT',2);
-draw_h_line(21,1.28*F,'b',':','M6.4 aftershocks',2);
+%draw_h_line(37,1.5*F,'b','-','M6.4 focal mech.',2);
+%draw_h_line(30,1.37*F,'b','--','M6.4 CMT',2);
+%draw_h_line(21,1.28*F,'b',':','M6.4 aftershocks',2);
 %draw_h_line(11,1.2*F,'b','none','active faults',2);
 
 text(deg2rad(152),2.45*F,'right-lateral','FontSize',14,'Rotation',0,...
@@ -254,14 +254,15 @@ text(deg2rad(152),2.45*F,'right-lateral','FontSize',14,'Rotation',0,...
 %draw_h_line(164,2.83*F,'r','-','focal mech.',1);
 %draw_h_line(169,2.78*F,'r','--','moment tensor',2);
 %draw_h_line(174,2.73*F,'r',':','aftershocks',2);
-draw_h_line(160,2.9*F,'r','-','M7.1 focal mech.',2);
-draw_h_line(165,2.83*F,'r','--','M7.1 CMT',2);
-draw_h_line(170,2.79*F,'r',':','M7.1 aftershocks',2);
+%draw_h_line(160,2.9*F,'r','-','M7.1 focal mech.',2);
+%draw_h_line(165,2.83*F,'r','--','M7.1 CMT',2);
+%draw_h_line(170,2.79*F,'r',':','M7.1 aftershocks',2);
 %draw_h_line(175,2.77*F,'r','','active faults');
 
 %line ([1 2],[30 30],'lineStyle','-');
 %saveas(gcf,'-r300','rose.png')
 print(gcf,'-dpng','-r300','rose');
+title("trans-tensional rose diagram")
 
 function draw_line(sa,color,lineStyle,lineWidth)
   avgAngRad = deg2rad(sa);

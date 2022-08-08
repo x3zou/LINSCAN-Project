@@ -1,14 +1,15 @@
 %This is the algorithms for plotting all indivicual clusters and focal
 %mechanisms
-%Xiaoyu Zou, x3zou@ucsd.edu, 7/21/2022
+%Xiaoyu Zou, x3zou@ucsd.edu, 7/28/2022
 clear
 clc
 %list=importdata("02list_eps=sqrt4_test.txt");
-ends=importdata("testingends.txt");
+ends=importdata("ttnewends.txt");
 %points=importdata("correlation0.2test.txt");%linscan-scanned data
-points2=importdata("testingclusters.txt");%high quality clusters
-input=importdata("date1input.txt");%earthquake catalog xy data
-catalog=importdata("date1MSDR.txt");%complete earthquake catalog
+points2=importdata("ttnewclusters.txt");%high quality clusters
+input=importdata("ttinput.txt");%earthquake catalog xy data
+catalog=importdata("ttMSDR.txt");%complete earthquake catalog
+totalcomp=importdata('ttnewcomp.txt');
 %res=importdata("testres.txt");%for testing
 pointsdr=zeros(1,7);
 newpointsdr=zeros(1,6);
@@ -41,10 +42,10 @@ for i = 1:size(points2,1)
         y=repmat(y,size(ind,1),1);
         n=repmat(n,size(ind,1),1);
     end
-    M=catalog(ind,3);
-    S=catalog(ind,4);
-    D=catalog(ind,5);
-    R=catalog(ind,6);
+    M=catalog(ind,4);
+    S=catalog(ind,5);
+    D=catalog(ind,6);
+    R=catalog(ind,7);
     xySDR=horzcat(n,x,y,M,S,D,R);
     pointsdr=vertcat(pointsdr,xySDR);
 end
@@ -53,7 +54,7 @@ pointsdr(1,:)=[];
 %plotall
 m=3;
 n=3;
-for p=1:1 %pages
+for p=16:16 %pages
     j=0+(p-1)*m*n;
     h=figure();
     set(h,'visible','off')
@@ -78,13 +79,13 @@ for p=1:1 %pages
             fm=fm*Mo;
             comp=comp+fm;
             % this is to estimate variability:
-            [s1,d1,s2,d2] = mij2sd(fm);
-            sm=[sm min([s1 s2])];
+%             [s1,d1,s2,d2] = mij2sd(fm);
+%             sm=[sm min([s1 s2])];
         end
         stdm=std(sm);
         Mo=sqrt(sum(comp(:).^2)/2);
         comp=comp/Mo;
-
+        comp=totalcomp(j,:);
         %estimate the composite strike
         strike=atan2(y2-y1,x2-x1)*180/pi;
         if strike<0
@@ -99,6 +100,7 @@ for p=1:1 %pages
         [S1,D1,R1,S2,D2,R2]=mij2sdr2(comp);
         [azP1, dipP1, azT1, dipT1] = PTaxis(S1,D1,R1);
         [azP2, dipP2, azT2, dipT2] = PTaxis(S2,D2,R2);
+        
         if abs(strike-S1) > abs(strike-S2)
             dipP=dipP2;
             dipT=dipT2;
@@ -132,10 +134,11 @@ for p=1:1 %pages
         else
             xm=(x1+x2)/2-L/3.5; ym=(y1+y2)/2-L/5;
         end
-        focalmech(comp, xm, ym, L/7, 'b','dc')
+%         focalmech(comp, xm, ym, L/7, 'b','dc')
+        focalmech(comp,xm,ym,L/7,'b','dc')
         text((x1+x2)/2,(y1+y2)/2,sprintf('n=%i,d=%f,cc=%f,\n dipP=%f,dipT=%f,id=#%i',num,mean_dist,cc,dipP,dipT,j),'Color','r','FontWeight','bold','Fontsize',9);
         h.Position=[10 10 1300 1300];
-%         saveas(h,sprintf('d2page%d.png',p));
+%         saveas(h,sprintf('ttpage%d.png',p));
     end
 end
 newpointsdr=vertcat(newpointsdr,pp);

@@ -1,17 +1,19 @@
 %Plot the distribution of fault traces and focal mechanisms. 
 %Also calculate the input for dihedral angle calculation
-%Xiaoyu Zou, x3zou@ucsd.edu, 5/31/2022
+%Xiaoyu Zou, x3zou@ucsd.edu, 7/31/2022
 clear
 clc
-minlon = -60; maxlon = 25; minlat = -5; maxlat = 80; %scope limit for fault traces plotting. Unit: UTM
+minlon = 0; maxlon = 60; minlat = -200; maxlat = 2; %scope limit for fault traces plotting. Unit: UTM
 %list=importdata("02list_eps=sqrt4_test.txt");
-ends=importdata("d1ends.txt");
+ends=importdata("ttnewends.txt");
 %points=importdata("correlation0.2test.txt");%linscan-scanned data
-points2=importdata("d1clusters.txt");%high quality clusters
-input=importdata("date1input.txt");%earthquake catalog xy data
-catalog=importdata("date1MSDR.txt");%complete earthquake catalog
+points2=importdata("ttnewclusters.txt");%high quality clusters
+input=importdata("ttinput.txt");%earthquake catalog xy data
+catalog=importdata("ttMSDR.txt");%complete earthquake catalog
+totalcomp=importdata('ttnewcomp.txt');%composite focal mechanism for each cluster
 pointsdr=zeros(1,7);
 newpointsdr=zeros(1,6);
+newends=zeros(1,4);
 ERROR=zeros(1,1);
 SDRSDR=zeros(1,6);
 for i = 1:size(points2,1)
@@ -24,10 +26,10 @@ for i = 1:size(points2,1)
         y=repmat(y,size(ind,1),1);
         n=repmat(n,size(ind,1),1);
     end
-    M=catalog(ind,3);
-    S=catalog(ind,4);
-    D=catalog(ind,5);
-    R=catalog(ind,6);
+    M=catalog(ind,4);
+    S=catalog(ind,5);
+    D=catalog(ind,6);
+    R=catalog(ind,7);
     xySDR=horzcat(n,x,y,M,S,D,R);
     pointsdr=vertcat(pointsdr,xySDR);
 end
@@ -64,35 +66,46 @@ for i=1:max(points2(:,1))
     err=err_2D_data(j,pp(:,1),pp(:,2),P);
     Mo=sqrt(sum(comp(:).^2)/2);
     comp=comp/Mo;
+    comp=totalcomp(j,:);
     [S1,D1,R1,S2,D2,R2]=mij2sdr2(comp);
-    SDRSDR=vertcat(SDRSDR,[S1 D1 R1 S2 D2 R2]);
-    ERROR=vertcat(ERROR,err);
-    v1=[x1 y1 0];  v2=[x2 y2 0];
-    pts=[pp(:,1) pp(:,2) 0*pp(:,1)];
-    L=sqrt((x2-x1)^2+(y2-y1)^2);
-    [d] = point_to_line(pts, v1, v2);
-    mean_dist=mean(abs(d))/L;
-    num=size(pp,1);
-    cc=pearson(pp(:,1),pp(:,2));
-    no=i;
-    M = [comp(1) comp(4) comp(5); comp(4) comp(2) comp(6); comp(5) comp(6) comp(3)];
-    %this is to determine where to plot the beachball
-    slope=(y1-y2)/(x1-x2);
-    if slope>0
-        xm=(x1+x2)/2+L/3.5; ym=(y1+y2)/2-L/5;
+    [azP1, dipP1, azT1, dipT1] = PTaxis(S1,D1,R1);
+    [azP2, dipP2, azT2, dipT2] = PTaxis(S2,D2,R2);
+    if dipP1<=40*pi/180 && dipT1<=40*pi/180 && dipP2 <= 40*pi/180 && dipT2 <= 40*pi/180 %for strike-slip fault
+     SDRSDR=vertcat(SDRSDR,[S1 D1 R1 S2 D2 R2]);
+     ERROR=vertcat(ERROR,err);
+     newends=vertcat(newends,[x1,y1,x2,y2]);
     else
-        xm=(x1+x2)/2-L/3.5; ym=(y1+y2)/2-L/5;
+        continue
     end
+%     v1=[x1 y1 0];  v2=[x2 y2 0];
+%     pts=[pp(:,1) pp(:,2) 0*pp(:,1)];
+%     L=sqrt((x2-x1)^2+(y2-y1)^2);
+%     [d] = point_to_line(pts, v1, v2);
+%     mean_dist=mean(abs(d))/L;
+%     num=size(pp,1);
+%     cc=pearson(pp(:,1),pp(:,2));
+%     no=i;
+%     M = [comp(1) comp(4) comp(5); comp(4) comp(2) comp(6); comp(5) comp(6) comp(3)];
+%     %this is to determine where to plot the beachball
+%     slope=(y1-y2)/(x1-x2);
+%     if slope>0
+%         xm=(x1+x2)/2+L/3.5; ym=(y1+y2)/2-L/5;
+%     else
+%         xm=(x1+x2)/2-L/3.5; ym=(y1+y2)/2-L/5;
+%     end
 %     line(pp(:,1),pp(:,2),'lineStyle','none','Marker','.','MarkerSize',8,'MarkerFaceColor','k','MarkerEdgeColor','k')
-    focalmech(comp, xm, ym, 3.5, 'b','dc')
-    hold on
-    axis equal
+%     focalmech(comp, xm, ym, 3.5, 'b','dc')%plot focal mechanism distribution
+%     hold on
+%     axis equal
 end
+% legend("background","clusters")
 ERROR(1,:)=[];
 SDRSDR(1,:)=[];
-%input for dihedral angle calculation
-date2dihedral_input=horzcat(ends,SDRSDR,ERROR);
-writematrix(date2dihedral_input,"date2dihedral_input.txt")
+newends(1,:)=[];
+
+% input for dihedral angle calculation
+ttdihedral_input=horzcat(newends,SDRSDR,ERROR);
+writematrix(ttdihedral_input,"ttdihedral_newinput.txt")
 
 %plot california faults
 orig=[-117.5 35.5]; % <— change to your local origin
@@ -112,6 +125,7 @@ if fault_tr==1
 end
 xlabel("Eastings(km)")
 ylabel("Northings(km)")
+title("trans-pressional ")
 return
 
 function [d] = point_to_line(pt, v1, v2)
